@@ -1,0 +1,45 @@
+<?php $db = DB::getInstance(); ?>
+
+<form action="<?php echo __BASEURL__; ?>/backend/convocatoria/submiteditardocumento/?idTipoDocumento=<?php echo $this->doc['idTipoDocumento']; ?>" method="post" id="formdocumento">
+	<table>
+		<tr><td>Nombre documento: </td><td><input type="text" name="documento" class="required" value="<?php echo $this->doc['documento']; ?>" /></td></tr>
+		<tr><td>Peso máximo en KB: </td><td><input type="text" name="pesoMax" class="required digits" value="<?php echo $this->doc['pesoMax']; ?>" /> (1 MB = 1024 KB)</td></tr>
+		<tr><td>Formatos permitidos: </td><td>
+			<?php 
+				$formatosActuales = array();
+					foreach($db->fetchArray("SELECT `f`.`idFormato` FROM `tbltipodocumentoformato` JOIN `tblformato` `f` USING(`idFormato`) WHERE `idTipoDocumento` = " . $this->doc['idTipoDocumento']) as $f){
+						$formatosActuales[] = $f['idFormato'];
+					}
+			
+			?>
+			
+			<?php foreach($db->fetchArray("SELECT * FROM `tblformato`") as $f): ?>
+			<label><input type="checkbox" name="formatos[]" value="<?php echo $f['idFormato']; ?>" <?php 
+				if(in_array($f['idFormato'], $formatosActuales)): echo "checked"; endif;
+			?>/> <?php echo $f['formato']; ?></label>
+			<?php endforeach; ?>
+		</td></tr>
+		<tr><td>Requisitos del documento: </td><td><textarea name="requisitos" class="requisitos"><?php echo htmlentities($this->doc['info']); ?></textarea></td></tr>
+
+		<tr><td colspan="2"><input type="submit" value="Guardar" /></td></tr>
+	</table>
+</form>
+
+<br /><br />
+
+<a href="<?php echo __BASEURL__; ?>/backend/convocatoria/documentos/" class="boton">&lt; Cancelar</a>
+
+
+
+<script type="text/javascript">
+$(function(){
+	$("#formdocumento").validate();
+	
+	tinymce.init({
+		selector: "textarea.requisitos",
+		plugins: ["table"]
+	});
+
+});
+
+</script>

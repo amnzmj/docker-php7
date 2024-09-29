@@ -1,0 +1,41 @@
+<?php if(isset($_GET['eliminado'])): ?>
+	<div class="alert alert-success">Aspirante eliminado.</div>
+<?php endif; ?>
+
+<form action="<?php echo __BASEURL__ ?>/backend/aspirantes/" method="get" class="filtro">
+	<strong>Filtrar por: </strong> Nombre: <input type="text" name="nombre" value="<?php echo (isset($_GET['nombre'])) ? $_GET['nombre'] : '' ?>" /> Email: <input type="text" name="email" value="<?php echo (isset($_GET['email'])) ? $_GET['email'] : '' ?>" /> <input type="submit" value="Filtrar" /> <input type="reset" value="Limpiar" />
+</form>
+<table class="listado">
+
+	<tr><th>Clave</th><th style="width: 320px">Nombre</th><th>E-mail</th><th>Fecha nacimiento</th><th  style="width: 320px">Licenciatura</th><th>Posgrado</th><th>Opciones</th></tr>
+	
+	<?php foreach($this->aspirantes as $a): ?>
+	<tr>
+		<td><a href="<?php echo __BASEURL__ ?>/backend/aspirantes/detalle/?idAspirante=<?php echo $a['idAspirante']; ?>"><strong><?php echo $a['clave']; ?></a></strong></td>
+		<td><?php echo $a['nombre']; ?></td>
+		<td><?php echo $a['email'] ?></td>
+		<td><?php echo $a['fechaNacimiento'] ?></td>
+		<td><?php echo $a['licenciatura'] ?></td>
+		<td><?php echo strtoupper(str_replace('_',' ',$a['posgrado'])) ?></td>
+		<td>
+			<a href="<?php echo __BASEURL__ ?>/backend/aspirantes/eliminar/?idAspirante=<?php echo $a['idAspirante']; ?>" class="boton rojo eliminar">Eliminar</a>
+			
+		</td>
+	</tr>
+	<?php endforeach; ?>
+</table>
+<br /><br />
+<?php echo $this->paginator->getPagination(); ?>
+<br /><br />
+
+
+
+<script type="text/javascript">
+	$(function(){
+		$("a.boton.eliminar").each(function(){
+			$(this).click(function(){
+				return confirm("¡Advertencia! Si se elimina un aspirante, se perderán todos los documentos que haya subido, ¿Continuar?");
+			});
+		});
+	});
+</script>

@@ -1,0 +1,63 @@
+<h1>Documentos para la convocatoria: </h1>
+<div style="text-align: right;">
+<a class="boton nuevo" href="<?php echo __BASEURL__; ?>/backend/convocatoria/nuevodocumento/">Nuevo documento</a>
+<br /><br />
+</div>
+
+<?php if(isset($_GET['nuevo'])):?>
+	<div class="alert alert-success">Nuevo documento agregado correctamente</div>
+<?php endif; ?>
+
+<?php if(isset($_GET['editar'])):?>
+	<div class="alert alert-success">Documento editado correctamente</div>
+<?php endif; ?>
+
+<?php if(isset($_GET['eliminar'])):?>
+	<div class="alert alert-success">Documento eliminado correctamente</div>
+<?php endif; ?>
+
+
+<table class="listado">
+	<tr>
+		<th>Documento</th>
+		<th>Peso máximo</th>
+		<th>Formatos permitidos</th>
+		<th>Opciones</th>
+	</tr>
+	
+	<?php foreach($this->documentos as $d):?>
+	
+		<tr>
+			<td><strong><?php echo $d['documento']; ?></strong></td>
+			<td><?php echo number_format($d['pesoMax']); ?> KB</td>
+			<td><?php echo $d['formatos']; ?></td>
+			<td>
+				<a href="<?php echo __BASEURL__; ?>/backend/convocatoria/editardocumento/?idTipoDocumento=<?php echo $d['idTipoDocumento']; ?>"class="boton editar">Editar</a>
+				<a href="<?php echo __BASEURL__; ?>/backend/convocatoria/eliminardocumento/?idTipoDocumento=<?php echo $d['idTipoDocumento']; ?>"class="boton rojo eliminar">Eliminar</a>
+				
+			</td>
+		</tr>
+	<?php endforeach; ?>
+</table>
+
+
+<br /><br />
+<a class="boton" href="<?php echo __BASEURL__; ?>/backend/convocatoria/">&lt; Regresar</a>
+
+
+<script type="text/javascript">
+	$(function(){
+		$("a.nuevo").each(function(){
+			$(this).click(function(){
+				return confirm("ADVERTENCIA! Al agregar un nuevo documento, solamente aplicará con los aspirantes que se registren a partir de ahora, los aspirantes existentesno tendrán este documento en sus expedientes. ¿Desea continuar?");
+			});
+		});
+		
+		$("a.eliminar").each(function(){
+			$(this).click(function(){
+				return confirm("ADVERTENCIA! Si elimina un documento, será eliminado PERMANENTEMETE en todos los expedientes de los aspirantes.  ¿Desea continuar?");
+			});
+		});
+	});
+
+</script>

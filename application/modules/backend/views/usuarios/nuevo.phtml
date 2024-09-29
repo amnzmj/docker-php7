@@ -1,0 +1,33 @@
+	<h1>Nuevo usuario</h1>
+	
+	<?php if($this->exists('emailRepetido')): ?>
+		<div class="alert alert-danger">Este email ya existe en la base de datos como usuario, no puede repetirse</div>
+	<?php endif; ?>
+	<form id="editarUsuario" action="<?php echo __BASEURL__  ?>/backend/usuarios/nuevo/" method="post">
+	<table>
+		<tr><td>Nombre: </td><td><input type="text" name="nombre" class="required"/></td></tr>
+		<tr><td>E-mail: </td><td><input type="text" name="email" class="required email" /></td></tr>
+		<tr><td>Posgrado para administrar: </td><td>
+		<select name="posgradoAdm" id="posgradoAdm" class="required">
+			  <option value="0">--Seleccione un Posgrado--</option>
+              <option value="Especialidad en Bioquímica Clínica">Especialidad en Bioquímica Clínica</option>
+			  <option value="Especialidad en Inocuidad de Alimentos">Especialidad en Inocuidad de Alimentos</option>
+			  <option value="Maestría en Química Clínica Diagnóstica">Maestría en Química Clínica Diagnóstica</option>
+			  <option value="Maestría en Ciencias de la Energía">Maestría en Ciencias de la Energía</option>
+			  <option value="Maestría en Ciencias Químico Biológicas">Maestría en Ciencias Químico Biológicas</option>
+			  <option value="Maestría en Ciencia y Tecnología Ambiental">Maestría en Ciencia y Tecnología Ambiental</option>
+			  <option value="Maestría en Ciencias y Tecnología de los Alimentos">Maestría en Ciencias y Tecnología de los Alimentos</option>
+			  <option value="Doctorado en Ciencias Químico Biológicas">Doctorado en Ciencias Químico Biológicas</option>
+			  <option value="Doctorado en Ciencias de los Alimentos">Doctorado en Ciencias de los Alimentos</option>
+			  <option value="Doctorado en Ciencia de la Energía">Doctorado en Ciencia de la Energía</option>
+		</select>
+		<td></tr>
+		<tr><td>Password: </td><td><input type="password" name="password" class="required" /></td></tr>
+		<tr><td colspan="2"><br /><br /><input type="submit" value="Crear" /></td></tr>
+	</table>
+	</form>
+	<script type="text/javascript">
+		$(function(){
+			$("#editarUsuario").validate();
+		});
+	</script>

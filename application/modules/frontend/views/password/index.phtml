@@ -1,0 +1,26 @@
+<h1>Cambiar contraseña</h1>
+
+<form action="<?php echo __BASEURL__ ?>/frontend/password/submit/" method="post" id="formPasswordChange">
+	<?php if(isset($_GET['incorrect'])): ?>
+	<div class="alert alert-danger">La contraseña actual es incorrecta.</div>
+	<?php endif ?>
+	<table>
+		<tr><td>Contraseña actual: </td><td><input type="password" name="actual" class="required" /></td></tr>
+		<tr><td>Contraseña nueva: </td><td><input type="password" name="nueva" id="nueva" class="required" /></td></tr>
+		<tr><td>Confirmar nueva: </td><td><input type="password" name="confirmar" id="confirmar" class="required"  /></td></tr>
+		<tr><td colspan="2"><input type="submit" value="Cambiar contraseña" /></td></tr>
+	</table>
+</form>
+
+<script type="text/javascript">
+	$(function(){
+		$("#formPasswordChange").validate({
+			rules: {
+				confirmar: {
+					equalTo: '#nueva'
+				}
+			}
+		});
+		
+	});
+</script>

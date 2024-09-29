@@ -1,0 +1,15 @@
+<h1>Rechazar documento</h1>
+
+<form action="<?php echo __BASEURL__ ?>/backend/documentos/rechazar/?idDocumento=<?php echo $this->doc['idDocumento']; ?>" method="post" id="formRechazar">
+	<table>
+		<tr><td>Documento: </td><td><strong><?php echo $this->doc['documento'] ?></strong></td></tr>
+		<tr><td>Comentario sobre el rechazo<br />para aspirante: </td><td><textarea name="comentario" class="required"></textarea></td></tr>
+		<tr><td colspan="2"><input type="submit" value="Rechazar documento" /></td></tr>
+	</table>
+</form>
+
+<script type="text/javascript">
+	$(function(){
+		$("#formRechazar").validate();
+	});
+</script>

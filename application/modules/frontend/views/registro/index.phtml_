@@ -1,0 +1,326 @@
+<?php
+	$db = DB::getInstance(); 
+	$estados = $db->fetchArray("SELECT * FROM tblestado");
+	$meses = array('Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre');
+?>
+
+<h1>Solicitud de admisión en línea</h1>
+<form id="formRegistro" action="<?php echo __BASEURL__ ?>/frontend/registro/submit/" method="post">
+<table>
+	<tr><td style="width: 200px;"></td><td style="width: 700px;"></td></tr>
+	
+	<tr><td>Posgrado: </td><td>
+	
+	<select name="posgrado" id="posgrado" class="required" onchange="cargarLGACs();">
+		<option value="">Seleccione un Posgrado...</option>
+	</select></td></tr>
+	
+	<!-- SE AGREGA ESTE CAMPO-->
+	<div id="nCuenta" style="display:none;">
+	
+	<tr><td colspan="2"><h2></h2></td></tr>
+	<tr><td>Línea de Generación y Aplicación del Conocimiento (LGAC) en la que está interesado: </td><td>
+		<select name="LGAC" id="LGAC">
+              <option value="">Seleccione una LGAC...</option>
+		</select>
+		</td></tr>
+		</div>
+		</TR><td>
+		</TD></TR>
+	<!-- HASTA AQUI-->
+	
+	<tr><td>Correo electrónico: </td><td><input type="text" name="email" id="email" class="required email" /></td></tr>
+	<tr><td colspan="2" style="height: 20px;"></td></tr>
+	
+	<tr><td>Apellido paterno: </td><td><input type="text" name="apellidoPaterno" id="apellidoPaterno" class="required" /></td></tr>
+	<tr><td>Apellido materno: </td><td><input type="text" name="apellidoMaterno" class="required" /></td></tr>
+	<tr><td>Nombre(s): </td><td><input type="text" name="nombre" class="required" /></td></tr>
+	<tr><td>Fecha de nacimiento: </td><td><input type="text" name="fechaNacimiento" class="required datepicker" /></td></tr>
+		
+	
+	<tr><td>Lugar de nacimiento: </td><td>
+		
+		<select class="required" name="estadoNacimiento" id="estadoNacimiento">
+			<option value="">-- Seleccione --</option>
+			<option value="otro">Otro (Fuera de México)</option>
+			<option value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			<?php foreach($estados as $estado): ?>
+				<option value="<?php echo $estado['idEstado']; ?>"><?php echo $estado['nombre']; ?></option>
+				<?php endforeach; ?>
+		</select>
+		<div style="display: none; padding: 10px 0;" id="lugarNacimientoExtranjero">
+		Especifique otro lugar de nacimiento: <br /><input type="text" name="lugarNacimientoExtranjero" id="lugarNacimientoExtranjeroInput" />
+		</div>
+	</td></tr>
+	
+	<tr><td>Estado Civil: </td><td><select name="estadoCivil" class="required"><option value="">-- Seleccione --</option><option value="S">Soltero(a)</option><option value="C">Casado(a)</option></select></td></tr>
+	
+	<tr><td>Nacionalidad: </td><td>
+		<select class="required" name="nacionalidad">
+			<option value="">-- Seleccione --</option>
+			<option value="142">México</option>
+			<option value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>
+			<?php foreach($db->fetchArray("SELECT idPais, pais FROM tblpais") as $pais): ?>
+				<option value="<?php echo $pais['idPais']; ?>"><?php echo $pais['pais']; ?></option>
+				<?php endforeach; ?>
+		</select>
+	</td></tr>
+	
+	<tr><td>Teléfono fijo: </td><td><input type="text" name="telefonoFijo" class="required" /></td></tr>
+	
+	<tr><td>Teléfono celular: </td><td><input type="text" name="telefonoMovil" class="" /></td></tr>
+	
+	
+	
+	
+	
+	<tr><td colspan="2"><h2>Dirección:</h2></td></tr>
+	<tr><td>Calle: <td><input type="text" name="direccionCalle" class="required" style="width: 270px;" /> Num. <input type="text" name="direccionNumero" class="required digits" style="width: 30px;" /></td></tr>
+	<tr><td>Colonia: </td><td><input type="text" name="direccionColonia" class="required" /></td></tr>
+	<tr><td>Estado: </td><td>
+		<select id="direccionEstado" name="direccionEstado" class="required">
+			<option value="">-- Seleccione --</option>
+				<?php foreach($estados as $estado){
+					?><option value="<?php echo $estado['idEstado']; ?>"><?php echo $estado['nombre']; ?></option>
+					<?php 
+				} ?>
+		</select></td></tr>
+	<tr><td>Municipio: </td>
+		<td>
+        <select name="direccionMunicipio" id="direccionMunicipio" class="required">
+			<option value="">-- Seleccione --</option>
+		</select>
+	</td></tr>
+	<tr><td>Código Postal: </td><td><input type="text" name="direccionCP" class="required digits" /></td></tr>
+
+	<tr><td colspan="2"><h2>Antecedentes académicos:</h2></td></tr>
+	<tr><td>Universidad donde se cursó la licenciatura: </td><td><input type="text" name="universidad" class="required" /></td></tr>
+	<tr><td>Dirección de la universidad: </td><td><input type="text" name="universidadDireccion" class="required" /></td></tr>
+	<tr><td>Estudios realizados (especificar nombre del programa): </td><td><input type="text" name="licenciatura" class="required" /></td></tr>
+	<tr><td>Fecha de ingreso: </td><td>
+		<select class="required auto" name="licenciaturaFechaIngresoMes">
+			<option value="">--</option>
+			<?php foreach($meses as $i=>$mes){?>  <option value="<?php echo str_pad(($i+1), 2, "0", STR_PAD_LEFT); ?>"><?php echo $mes; ?></option> <?php } ?>
+		</select>
+		<select class="required auto" name="licenciaturaFechaIngresoAno">
+			<option value="">--</option>
+			<?php for($i = date("Y"); $i>=(date("Y") - 100); $i--){?>  <option value="<?php echo $i; ?>"><?php echo $i; ?></option> <?php } ?>
+		</select>
+	</td></tr>
+	<tr><td>Fecha de egreso: </td><td>
+		<select class="required auto" name="licenciaturaFechaEgresoMes">
+			<option value="">--</option>
+			<?php foreach($meses as $i=>$mes){?>  <option value="<?php echo str_pad(($i+1), 2, "0", STR_PAD_LEFT); ?>"><?php echo $mes; ?></option> <?php } ?>
+		</select>
+		<select class="required auto" name="licenciaturaFechaEgresoAno">
+			<option value="">--</option>
+			<?php for($i = date("Y"); $i>=(date("Y") - 100); $i--){?>  <option value="<?php echo $i; ?>"><?php echo $i; ?></option> <?php } ?>
+		</select>
+	</td></tr>
+	<tr><td>Promedio general: </td><td><input type="text" name="promedioGeneral" class="required" /></td></tr>
+	<tr><td>¿Cuenta actualmente con su título profesional? </td><td>
+		<select name="tieneTitulo" class="required"><option value="">---</option><option value="1">Si</option><option value="0">No</option></select>
+	</td></tr>
+	
+	<tr><td colspan="2"><h2>En caso de haber realizado otros estudios de posgrado [Especialidad, Maestría]:</h2></td></tr>
+	<tr><td>Estudios realizados: </td><td><input type="text" name="posgrados[0][posgrado]" class="" /></td></tr>
+	<tr><td>Nombre de la institución: </td><td><input type="text" name="posgrados[0][institucion]" class="" /></td></tr>
+	<tr><td>Fecha de ingreso: </td><td>
+		<select class="auto" name="posgrados[0][fechaIngresoMes]">
+			<option value="">--</option>
+			<?php foreach($meses as $i=>$mes){?>  <option value="<?php echo str_pad(($i+1), 2, "0", STR_PAD_LEFT); ?>"><?php echo $mes; ?></option> <?php } ?>
+		</select>
+		<select class="auto" name="posgrados[0][fechaIngresoAno]">
+			<option value="">--</option>
+			<?php for($i = date("Y"); $i>=(date("Y") - 100); $i--){?>  <option value="<?php echo $i; ?>"><?php echo $i; ?></option> <?php } ?>
+		</select>
+	</td></tr>
+	<tr><td>Fecha de egreso: </td><td>
+		<select class="auto" name="posgrados[0][fechaEgresoMes]">
+			<option value="">--</option>
+			<?php foreach($meses as $i=>$mes){?>  <option value="<?php echo str_pad(($i+1), 2, "0", STR_PAD_LEFT); ?>"><?php echo $mes; ?></option> <?php } ?>
+		</select>
+		<select class="auto" name="posgrados[0][fechaEgresoAno]">
+			<option value="">--</option>
+			<?php for($i = date("Y"); $i>=(date("Y") - 100); $i--){?>  <option value="<?php echo $i; ?>"><?php echo $i; ?></option> <?php } ?>
+		</select>
+	</td></tr>
+	
+	<tr><td colspan="2"><div id="posgrados"></div></td></tr>
+	<tr><td colspan="2"><input type="button" value="Agregar otro posgrado" onclick="agregarPosgrado();" /></td></tr>
+	
+	<tr><td colspan="2" style="height: 30px;"></td></tr>
+	<tr><td colspan="2"><input type="checkbox" name="confirmar" class="required" /> Hago constar que todos los datos contenidos en la presente solicitud son verdaderos.</td></tr>
+	<tr><td colspan="2" style="height: 20px;"></td></tr>
+	<tr><td colspan="2"><input type="submit" value="Enviar solicitud" /></td></tr>
+
+		
+</table>
+	
+
+</form>
+
+
+<div id="nuevoPosgrado" style="display: none;">
+<table>
+	<tr><td colspan="2" style="height: 30px;"></td></tr>
+	<tr><td>Estudios realizados: </td><td><input type="text" name="posgrados[xx][posgrado]" class="" /></td></tr>
+	<tr><td>Nombre de la institución: </td><td><input type="text" name="posgrados[xx][institucion]" class="" /></td></tr>
+	<tr><td>Fecha de ingreso: </td><td>
+		<select class="auto" name="posgrados[xx][fechaIngresoMes]">
+			<option value="">--</option>
+			<?php foreach($meses as $i=>$mes){?>  <option value="<?php echo str_pad(($i+1), 2, "0", STR_PAD_LEFT); ?>"><?php echo $mes; ?></option> <?php } ?>
+		</select>
+		<select class="auto" name="posgrados[xx][fechaIngresoAno]">
+			<option value="">--</option>
+			<?php for($i = date("Y"); $i>=(date("Y") - 100); $i--){?>  <option value="<?php echo $i; ?>"><?php echo $i; ?></option> <?php } ?>
+		</select>
+	</td></tr>
+	<tr><td>Fecha de egreso: </td><td>
+		<select class="auto" name="posgrados[xx][fechaEgresoMes]">
+			<option value="">--</option>
+			<?php foreach($meses as $i=>$mes){?>  <option value="<?php echo str_pad(($i+1), 2, "0", STR_PAD_LEFT); ?>"><?php echo $mes; ?></option> <?php } ?>
+		</select>
+		<select class="auto" name="posgrados[xx][fechaEgresoAno]">
+			<option value="">--</option>
+			<?php for($i = date("Y"); $i>=(date("Y") - 100); $i--){?>  <option value="<?php echo $i; ?>"><?php echo $i; ?></option> <?php } ?>
+		</select>
+	</td></tr>
+</table>
+</div>
+
+
+<div id="correoExiste" style="display: none;">
+	Este correo electrónico ya existe registrado en el sistema, puede intentar recuperar la contraseña en el siguiente link:<br />
+	<a href="<?php echo __BASEURL__ ?>/frontend/recuperar/">Recuperar mi contraseña</a>
+</div>
+
+ <script type="text/javascript">
+ 
+function cargarposgrados() {
+    var array = ["Especialidad_en_Bioquímica_Clínica", "Especialidad_en_Inocuidad_de_Alimentos", 
+    "Maestría_en_Química_Clínica_Diagnóstica", "Maestría_en_Ciencias_de_la_Energía", 
+    "Maestría_en_Ciencias_Químico_Biológicas",
+    "Maestría_en_Ciencia_y_Tecnología_Ambiental",
+    "Maestría_en_Ciencias_y_Tecnología_de_los_Alimentos",
+    "Doctorado_en_Ciencias_Químico_Biológicas",
+    "Doctorado_en_Ciencias_de_los_Alimentos",
+     "Doctorado_en_Ciencia_de_la_Energía"];
+    array.sort();
+    addOptions("posgrado", array);
+}
+//Función para agregar opciones a un <select>.
+function addOptions(domElement, array) {
+    var selector = document.getElementsByName(domElement)[0];
+    for (posgrado in array) {
+        var opcion = document.createElement("option");
+        opcion.text = (array[posgrado]).replace(/_/g,' ');
+        // Añadimos un value a los option para hacer mas facil escoger los LGACs
+        opcion.value = array[posgrado].toLowerCase();
+        selector.add(opcion);
+    }
+}
+
+function cargarLGACs() {
+    // Objeto de posgrados con LGACs
+    var listaLGACs = {
+      //especialidad_en_bioquímica_clínica: ["Laredo", "Gama", "Solares", "Castillo", "Santander"],
+      //especialidad_en_inocuidad_de_alimentos: ["Langreo", "Villaviciosa", "Oviedo", "Gijon", "Covadonga"],
+      maestría_en_química_clínica_diagnóstica: ["Microbiología diagnóstica molecular", "Aplicación de biomarcadores para enfermedades no transmisibles"],
+      maestría_en_ciencias_de_la_energía: ["Sistemas de Transformación de Energías a partir de Fuentes Renovables"],
+      maestría_en_ciencias_químico_biológicas: ["Química Medicinal", "Química Biomolecular"],
+      maestría_en_ciencia_y_tecnología_ambiental: ["Identificación de la Contaminación y Modelación del Transporte de Solutos en Suelos para la remediación", 
+      "Desarrollo de Tecnologías para el Tratamiento de Aguas Residuales, uso Eficiente del Agua y su Reúso", "Desarrollo de Tecnologías Botánicas, Microbiales e Integrales para el Manejo Racional de la Sanidad en los Cultivos"],
+      maestría_en_ciencias_y_tecnología_de_los_alimentos: ["Alimentos Nutracéuticos", "Inocuidad Microbiana de los Alimentos", "Biotecnología de los Alimentos", "Tecnologías Emergentes para promover la Seguridad Alimentaria"],
+      doctorado_en_ciencias_químico_biológicas: ["Química Biomolecular y Modulación reostática de la expresión de moléculas con actividad fisiológica", "Química Medicinal e Investigación química, bioquímica, farmacológica y nutrimental de productos naturales de interés farmacéutico y alimenticio"],
+      doctorado_en_ciencias_de_los_alimentos: ["Alimentos Nutracéuticos", "Inocuidad Microbiana de los Alimentos", "Biotecnología de los Alimentos", "Tecnologías Emergentes para promover la Seguridad Alimentaria"],
+      doctorado_en_ciencia_de_la_energía: ["Sistemas de Transformación de Energías a partir de Fuentes Renovables"]
+  };
+    
+    var posgrados = document.getElementById('posgrado');
+    var LGACs = document.getElementById('LGAC');
+    var posgradoSeleccionada = posgrados.value;
+    
+    // Se limpian los LGACs
+    LGACs.innerHTML = '<option value="">Seleccione un LGAC...</option>';
+    
+    if(posgradoSeleccionada !== ''){
+      // Se seleccionan los LGACs y se ordenan
+      posgradoSeleccionada = listaLGACs[posgradoSeleccionada];
+      posgradoSeleccionada.sort();
+    
+      // Insertamos los LGACs
+      posgradoSeleccionada.forEach(function(LGAC){
+        let opcion = document.createElement('option');
+        opcion.value = LGAC;
+        opcion.text = LGAC;
+        LGACs.add(opcion);
+      });
+    }
+    
+  }
+  
+ // Iniciar la carga de posgrados solo para comprobar que funciona
+cargarposgrados();
+	$(function(){
+	
+		$(".datepicker").each(function(){
+			var name = $(this).attr('name');
+			$(this).attr('readonly', 'readonly');
+			
+			$("<input>").attr({
+				'type': 'hidden',
+				'name': name,
+				'id': name + '_altdate'
+			}).appendTo( $(this).parent() );
+			
+			$(this).removeAttr('name');
+			
+			$(this).datepicker({
+				changeMonth: true,
+				changeYear: true,
+				yearRange:'-90:+0',
+				maxDate: '0',
+				altFormat: 'yy-mm-dd',
+				altField: "#" + name + "_altdate"
+			});
+		});
+		
+		$("#formRegistro").validate({
+			onkeyup: false,
+			rules: {
+				email: {
+					remote: "<?php echo __BASEURL__; ?>/frontend/registro/checkEmail/"
+				}
+			}	
+		});
+		
+		$("#formRegistro").submit(function(){
+			if( $(this).valid() ){
+				$(this).find("input[type=submit]").attr('disabled', 'disabled');
+			}
+		});
+		
+		$("#estadoNacimiento").change( function() {
+			if(($(this).val()) == "otro"){
+				$("#lugarNacimientoExtranjeroInput").addClass("required");
+				$("#lugarNacimientoExtranjero").fadeIn();
+			}
+			else{
+				$("#lugarNacimientoExtranjeroInput").removeClass("required");
+				$("#lugarNacimientoExtranjero").fadeOut();
+			}
+		});
+		
+		$("#direccionMunicipio").jCombo("<?php echo __BASEURL__; ?>/frontend/registro/getMunicipios/?idEstado=", { initial_text: "-- Seleccione --", parent: "#direccionEstado" } );
+	});
+	
+	var posgrado = 1;
+	function agregarPosgrado(){
+		var nuevoposgrado = $("#nuevoPosgrado").clone().html();
+		for(var i = 0; i<10; i++) nuevoposgrado = nuevoposgrado.replace("xx", "" + posgrado + ""); 
+		$(nuevoposgrado).appendTo("#posgrados");
+		posgrado++;
+		
+	}
+</script>

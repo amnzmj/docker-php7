@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta http-equiv="Content-language" content="es" />
+		<title>Facultad de Química UAQ - Convocatoria a la Maestría en Ciencias de los Alimentos (Propac)</title>
+		<link rel="icon" type="image/png" href="https://quimica.uaq.mx/templates/protostar/favicon.ico" />	
+		<link rel="stylesheet" href="https://quimica.uaq.mx/templates/protostar/css/template.css">
+		<link href="<?php echo __BASEURL__ ?>/css/common.css" media="screen" rel="stylesheet" type="text/css" />
+		<link href="<?php echo __BASEURL__ ?>/css/screen.css" media="screen" rel="stylesheet" type="text/css" />
+		<?php if($this->exists('jqueryui')): ?>
+		<link href="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.21/themes/base/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
+		<?php endif; ?>
+		<script src="https://www.uaq.mx/media/jui/js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+		<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="<?php echo __BASEURL__ ?>/js/jquery.validate.min.js"></script>	
+		<script type="text/javascript" src="<?php echo __BASEURL__ ?>/js/localization/messages_es.js"></script>	
+		<script type="text/javascript" src="<?php echo __BASEURL__ ?>/js/jquery.jCombo.min.js"></script>	
+		<?php if($this->exists('jqueryui')): ?>
+		<script type="text/javascript" src="<?php echo __BASEURL__ ?>/js/ui.datepicker-es-MX.js"></script>	
+		<?php endif; ?>
+	
+			
+
+		<!--[if lt IE 7]>
+			<style type="text/css">
+			</style>
+			
+			<script type="text/javascript" src="<?php echo __BASEURL__ ?>/js/DD_belatedPNG_0.0.8a-min.js"></script>
+			<script type="text/javascript"> DD_belatedPNG.fix('div, img, a'); </script>
+		<![endif]-->
+		
+	</head>
+	<body class="<?php echo $this->controller; ?> site com_content view-article no-layout no-task itemid-291">
+	<div class="body">
+		<div class="container">
+			<div id="header">
+				<!--<a href="<?php echo __BASEURL__ ?>/" class="logo"><img src="<?php echo __BASEURL__ ?>/images/logo.jpg" /></a>-->
+				<div class="nombre"><h1>Sistema de Digitalización de <br>Expedientes</h1><h2>Facultad de Química</h2></div>
+				<!--<img class="logouaq" src="<?php echo __BASEURL__ ?>/images/logo_uaq.png" />-->
+				<img class="logouaq" src="https://quimica.uaq.mx/images/logos/fcq.png" />
+				<div class="clear"></div>
+			</div>
+			<?php if(Zend_Auth::getInstance()->hasIdentity()): ?>
+			<?php $auth_id = Zend_Auth::getInstance()->getIdentity(); ?>
+			<?php if($auth_id['type'] == 'user'): ?>
+			<div id="navigation">
+				<ul>
+					<li><a href="<?php echo __BASEURL__ ?>/frontend/documentos/">Mi Expediente</a></li>
+					<li><a href="<?php echo __BASEURL__ ?>/frontend/password/">Cambiar contraseña</a></li>
+					<li class="logout"><a href="<?php echo __BASEURL__ ?>/frontend/login/logout/">Cerrar sesión</a></li>
+				</ul>
+			</div>
+			<?php endif; ?>
+			<?php endif; ?>
+			
+			<div class="row-fluid">
+			<div >
+				<?php echo $this->viewRender; ?>
+			</div>
+			</div>
+		</div>
+		
+		
+		<div id="bgOverlay">
+			<div id="messageWindow">
+				<div id="closebtn"><a href="#" onclick="return closeMessage();">Cerrar X</a></div>
+				<div id="message"></div>
+			</div>
+		</div>
+</div>
+		<script type="text/javascript">
+			function showMessage(url, parameters){
+				$("#message").load(url, parameters, function(){
+					$("#bgOverlay").fadeIn(function(){
+						$("#messageWindow").fadeIn();
+					});
+				});
+				
+			}
+			function closeMessage(){
+				$("#messageWindow").fadeOut(function(){
+					$("#bgOverlay").fadeOut();
+				});
+				return false;
+			}
+		</script>
+
+		
+	</body>
+</html>

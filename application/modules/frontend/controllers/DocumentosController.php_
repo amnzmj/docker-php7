@@ -1,0 +1,228 @@
+<?php
+
+	class DocumentosController extends Controller{
+
+		public function indexAction(){
+			$db = DB::getInstance();
+			$identity = Zend_Auth::getInstance()->getIdentity();
+			$sql = "SELECT `vd`.* FROM `viewdocumentos` AS `vd`, `tblexpediente` AS `e` WHERE `vd`.`idExpediente` = `e`.`idExpediente` 
+				AND `e`.`idAspirante` = " .  $identity['idAspirante'];
+				
+			$paginaActual = (isset($this->_req['page']) && $this->_req['page'] > 1) ? $this->_req['page'] : 1;
+			$paginator = new Pagination($sql, 15, $paginaActual);
+			$this->view->documentos = $paginator->getResults();
+			$this->view->paginator = $paginator;
+
+			$this->view->checarCompletado = $db->fetchOne("SELECT 1 FROM `viewexpedientes` AS `ve`, `tblaspirante` AS `a`, `tblexpediente` AS `e` WHERE (`ve`.`status` = 'OK' OR `ve`.`status` = 'REV')  AND `ve`.`idExpediente` = `e`.`idExpediente` AND `a`.`idAspirante` = `e`.`idAspirante` AND `a`.`idAspirante` = " . $identity['idAspirante']);
+		}
+		
+		
+		////////////////////////////
+		////////////////////////////
+		
+		public function descargarAction(){
+			$doc = false;
+			
+			if( !(
+				isset($this->_req['idDocumento']) 
+				&& is_numeric( $this->_req['idDocumento'] ) 
+				&& $doc = $this->getDoc($this->_req['idDocumento'] ) 
+			)){
+					header("Location: ". __BASEURL__ ."/frontend/documentos/"); exit;
+			}
+			
+			$this->disableLayout();
+			$this->disableView();
+			
+			$this->addResponseHeader(array(
+				"Content-Type: " . $doc['mime'],
+				"Content-Disposition: attachment; filename=\"{$doc['nombre']}\"",
+				"Pragma: public",
+				"Cache-Control: must-revalidate, post-check=0, pre-check=0",
+				"Content-Length: " . filesize( $doc['path'] )
+			) );
+			
+			
+			readfile( $doc['path'] );
+
+	
+		}
+		
+		
+		///////////////////////////////
+		///////////////////////////////
+		
+		
+		public function subirAction(){
+		
+		$identity = Zend_Auth::getInstance()->getIdentity();
+			$db = DB::getInstance();
+			
+			if(!(
+				isset($this->_req['idDocumento']) 
+				&& is_numeric( $this->_req['idDocumento'] )
+				&& $db->fetchOne( "SELECT 1 FROM `tbldocumento` WHERE `idDocumento` = '".$this->_req['idDocumento']."' AND checarPropiedadExpediente('". $identity['idAspirante'] ."',`idExpediente`)" )
+			)){
+				header("Location: ". __BASEURL__ ."/frontend/documentos/"); exit;
+			}
+			
+			
+			$documento = $db->fetchRow( "SELECT `vd`.`idDocumento`, `td`.`idTipoDocumento`, `td`.`documento`, `td`.`pesoMax`, `td`.`info` FROM `tbltipodocumento` AS `td`, `viewdocumentos` AS `vd` WHERE `td`.`idTipoDocumento` = `vd`.`idTipoDocumento` AND `vd`.`idDocumento` = '". $this->_req['idDocumento'] ."'" );
+			
+			$this->view->formatos = $db->fetchArray("SELECT `f`.`formato` FROM `tbltipodocumentoformato` AS `tdf`, `tblformato` AS `f` WHERE `f`.`idFormato` = `tdf`.`idFormato` AND `tdf`.`idTipoDocumento` = " . $documento['idTipoDocumento']);
+			$this->view->documento = $documento;
+			$this->view->_req = $this->_req;
+
+		}
+		
+		
+		
+		
+		////////////////////////////////////
+		////////////////////////////////////
+		
+		public function subirsubmitAction(){
+			$this->disableView();
+			
+			if(!( isset($this->_req['idDocumento']) && is_numeric( $this->_req['idDocumento'] ) ) ){
+				header("Location: ". __BASEURL__ ."/frontend/documentos/"); exit;
+			}
+			
+			$db = DB::getInstance();
+			$ini = Expedientes_Application::getConfig();
+			$identity = Zend_Auth::getInstance()->getIdentity();
+
+			
+			$documento = $db->fetchRow( "SELECT `d`.`idDocumento`, `d`.`idTipoDocumento`, `td`.`pesoMax`, `d`.`idExpediente`, `vd`.`status` FROM `tbldocumento` AS `d`, `tbltipodocumento` AS `td`, `viewdocumentos` AS `vd` WHERE `d`.`idDocumento` = '".$this->_req['idDocumento']."' AND checarPropiedadExpediente('". $identity['idAspirante'] ."',`d`.`idExpediente`) AND `d`.`idTipoDocumento` = `td`.`idTipoDocumento` AND `vd`.`idDocumento` = `d`.`idDocumento` AND `vd`.`status` <> 'OK'" );
+			
+			if(!$documento || $_FILES['archivo']['error'] != 0){
+				header("Location: ". __BASEURL__ ."/frontend/documentos/"); exit;
+			}
+			
+			
+			$extPermitidas = array();
+			$extensiones = $db->fetchArray("SELECT `extension` FROM `viewextensionesdocumentos` WHERE `idTipoDocumento` = " . $documento['idTipoDocumento']);
+			foreach($extensiones as $e) { $extPermitidas[] = $e['extension']; }
+			
+			$extensionSubida = "";
+			$extensionSubidaArr = explode(".", $_FILES['archivo']['name']);
+			$extensionSubida = strtolower( $extensionSubidaArr[count($extensionSubidaArr) - 1] );
+				
+			//checar extension
+			if(!in_array($extensionSubida, $extPermitidas)){
+				header("Location: ". __BASEURL__ ."/frontend/documentos/subir/?idDocumento={$documento['idDocumento']}&ext=1"); exit;
+			}
+			//checar tamano
+			if( ($_FILES['archivo']['size'] / 1024 ) > $documento['pesoMax'] ){
+				header("Location: ". __BASEURL__ ."/frontend/documentos/subir/?idDocumento={$documento['idDocumento']}&peso=1"); exit;
+			}
+			
+				
+			$uploadPath = realpath($ini->files->uploadPath) . "/.";
+			
+			if( move_uploaded_file($_FILES['archivo']['tmp_name'], $uploadPath . "/". $documento['idDocumento'] ) ){
+				$data = array('idExtension' => array("(SELECT `idExtension` FROM `tblextensiones` WHERE `extension` = '$extensionSubida')") );
+				$cambioExt = $db->update($data, "tbldocumento", "`idDocumento` = " . $documento['idDocumento']);
+				if($cambioExt){
+				
+				
+					$data = array("idDocumento"=>$documento['idDocumento'], "fecha" => array("NOW()"), "idStatus" => 3);
+					$cambioStatus = $db->insert($data, "tblstatusdocumento");
+					
+					//Notificar de expediente completado
+					$checarCompletado = $db->fetchRow( "SELECT 1 FROM `viewexpedientes` AS `ve` WHERE `ve`.`idExpediente` = " . $documento['idExpediente'] . " AND `cuentaSinDatos` = 0 AND `cuentaRechazados` = 0" );
+					if($checarCompletado){
+						$cambioStatusExp = $db->query("UPDATE `tblexpediente` SET `idStatus` = (SELECT `idStatus` FROM `tblstatus` WHERE `status` = 'REV') WHERE `idExpediente` = " .  $documento['idExpediente'] );
+						$dQuery = $db->fetchArray("SELECT `email` FROM `tbladministrador` WHERE `notificar` = 1 AND `activo` = 1");
+						$destinatarios = array();
+						foreach($dQuery as $d){
+							$destinatarios[] = $d['email'];
+						}
+						$data = array(
+							"nombre" => $identity['nombre'],
+							"fecha" => $db->fetchOne("SELECT formatoFechaHora(NOW())")
+						);
+						$notif = new Notifier($destinatarios, $data, "Expediente completado para revisión", $ini->email->templatePath . "/expedienteCompletado.phtml");
+					}
+					
+
+					header("Location: ". __BASEURL__ ."/frontend/documentos/"); exit;
+				}
+			}
+		
+		}
+		
+		
+		
+		
+		////////////////////////////////////////////
+		////////////////////////////////////////////
+		
+		public function comentarioAction(){
+			$this->disableLayout();
+			$db = DB::getInstance();
+			$identity = Zend_Auth::getInstance()->getIdentity();
+			$status = $db->fetchOne(
+				"SELECT `status` FROM `viewdocumentos` WHERE `idDocumento` = '". $this->_req['idDocumento'] ."'
+				AND checarPropiedadExpediente(" . $identity['idAspirante'] . ", `idExpediente`)"
+			);
+			
+			if($status == "RECHAZADO"){
+				$this->view->comentario = $db->fetchRow( "SELECT `comentario`, formatoFechaHora(`fecha`) AS `fecha` FROM `tblstatusdocumento` WHERE `idDocumento` = '". $this->_req['idDocumento'] ."' AND `idStatus` = 5 ORDER BY `tblstatusdocumento`.`fecha` DESC LIMIT 1");
+			}
+			else{
+				$this->disableView();
+			}
+		
+		}
+		
+		
+		///////////////////////////
+		///////////////////////////
+		
+		public function requisitosAction(){
+		
+			$db = DB::getInstance();
+			$this->disableLayout();
+			
+			
+			$info = $db->fetchOne("SELECT `info` FROM `tbltipodocumento` WHERE `idTipoDocumento` = '{$this->_req['idTipoDocumento']}'");
+			
+			if(!$info){
+				return;
+			}
+			
+			$this->view->info = $info;
+		
+		}
+		
+		
+		
+		private function getDoc($idDocumento){
+			$db = DB::getInstance();
+			$identity = Zend_Auth::getInstance()->getIdentity();
+			
+			$documento = $db->fetchRow( "SELECT `d`.`idExpediente`, `d`.`idDocumento`, `d`.`idTipoDocumento`, LCASE(`d`.`documento`) AS `documento`, LCASE(`ve`.`nombre`) AS `nombre`, `e`.`extension`, `e`.`mime`, `d`.`status` FROM `viewdocumentos` AS `d`, `tblextensiones` AS `e`, `tbldocumento` AS `dd`, `viewexpedientes` AS `ve` WHERE `d`.`idDocumento` = '".$idDocumento."' AND checarPropiedadExpediente('". $identity['idAspirante'] ."', `d`.`idExpediente`) AND `dd`.`idDocumento` = `d`.`idDocumento` AND `e`.`idExtension` = `dd`.`idExtension` AND `ve`.`idExpediente` = `d`.`idExpediente`" );
+			
+			if(!$documento){
+				return false;
+			}
+			if($documento['status'] == "SIN_DATOS"){
+				return false;
+			}
+			
+			$acentos = array(" ", "á","é",'í',"ó","ú", "ñ", "(", ")", ";", ",");
+			$reempAcentos =  array("_", "a","e",'i',"o","u", "n", "", "", "", "");
+			
+			$nombre = $documento['idExpediente'] ."_".  strtolower( str_replace($acentos, $reempAcentos, substr($documento['nombre'], 0, 20)) )  ."_". strtolower( str_replace($acentos, $reempAcentos, substr($documento['documento'], 0, 50)) ) . "." .$documento['extension'];
+
+			$uploadPath = realpath(Expedientes_Application::getConfig()->files->uploadPath);
+			
+			return array(
+				'nombre' => $nombre,
+				'mime' => $documento['mime'],
+				'path' => $uploadPath . "/" . $documento['idDocumento']
+			);
+			
+		}
+	}

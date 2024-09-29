@@ -1,0 +1,24 @@
+<form action="<?php echo __BASEURL__ ?>/backend/expedientes/" method="get" class="filtro">
+	<strong>Filtrar por: </strong> 
+	Clave: <input type="text" name="clave" value="<?php echo (isset($_GET['clave'])) ? $_GET['clave'] : '' ?>" /> 
+	Nombre: <input type="text" name="nombre" value="<?php echo (isset($_GET['nombre'])) ? $_GET['nombre'] : '' ?>" /> 
+	<input type="submit" value="Filtrar" /> <input type="reset" value="Limpiar" />
+</form>
+<table class="listado">
+	<tr><th>Clave</th><th style="width: 290px;">Nombre</th><th>Fecha Abierto</th><th>Fecha Aprobado</th><th>Status</th><th style="width: 100px;">Opciones</th></tr>
+	
+	<?php foreach($this->expedientes as $exp):	?>
+	<tr class="<?php echo strtolower($exp['status']); ?>">
+		<td><?php echo $exp['clave']; ?></td>
+		<td><strong><?php echo strtoupper( $exp['nombre'] ); ?></strong></td>
+		<td style="width: 110px"><?php echo $exp['fechaAbierto']; ?></td>
+		<td style="width: 110px"><?php echo $exp['fechaAprobado'] ?></td>
+		<td><?php echo $exp['textoStatus'] ?></td>
+		<td>
+			<a href="<?php echo __BASEURL__ ?>/backend/documentos/?idExpediente=<?php echo $exp['idExpediente']; ?>" class="boton">Abrir</a>		
+		</td>
+	</tr>
+	<?php endforeach; ?>
+</table>
+<br /><br />
+<?php echo $this->paginator->getPagination(); ?>

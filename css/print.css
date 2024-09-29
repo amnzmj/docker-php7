@@ -1,0 +1,134 @@
+/* BASIC STYLING */
+
+
+html, body, div, span, applet, object, iframe, 
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+ border: 0; margin: 0; outline: 0; padding: 0; vertical-align: baseline; }
+:focus { outline: 0; }
+
+body, html{ height: 100%; }
+ol, ul { list-style: none; }
+table { border-collapse: collapse; border-spacing: 0; font-size: 1em; }
+caption, td { font-weight: normal; text-align: left; }
+th { text-align: left; }
+hr { display: none; }
+
+
+/* Universal classes */ 
+
+.clear { clear: both; }
+.block{	display: block;	text-indent: -9999px; }
+.float{	float: left; }
+.preloading{
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	top: -9999px;
+	left: -9999px;
+	
+}
+
+
+
+/* General configuration */ 
+
+body{
+	font-family: Tahoma, sans-serif;
+	text-decoration: none;
+	background: #fff;
+	color:#414141;
+	font-size: 14px;
+}
+
+/* Styles */ 
+
+
+H1 {color: #414141; font-size:18px; margin: 10px 0 10px 0; }  
+H2 {color: #013756; font-size: 16px; margin: 10px 0 10px 0}  
+H3 {color: #414141; font-size:14px; margin: 10px 0 5px 0}  
+H5 { }
+H6 { }
+
+a { text-decoration: none; color:#004ba0; }
+a:hover { text-decoration: underline; }
+p{ padding-bottom: 5px; line-height: 120%; }
+
+
+
+
+/* Forms */ 
+
+form{
+	margin-top: 15px;
+}
+form table td{
+	vertical-align: top;
+	padding-bottom: 3px;
+	padding-right: 5px;
+}
+
+
+input[type=text], input[type=password], textarea, select{
+	width: 250px;
+	font-family: Tahoma, sans-serif;
+	font-size: 13px;
+}
+
+select.auto{
+width: auto !important;
+}
+
+textarea{
+	height: 160px;
+}
+
+input.fecha{
+	background-image: url(/images/calendar.gif);
+	background-repeat:	no-repeat;
+	background-position: right center;
+}
+
+
+input[type=submit]{
+	font-weight: bold;
+}
+
+label{
+	cursor: pointer; 
+	font-size: 1em;
+	display: block;	
+}
+
+label.error{color: #ff0000}
+
+
+
+#header{
+	padding-bottom: 30px;
+}
+
+#navigation{
+	display: none;
+}
+
+#bgOverlay{
+	display: none;
+}
+
+
+table.listado{
+	width: 98%;
+	margin-bottom: 30px;
+}
+table.listado th, td{
+	padding: 3px 5px;
+}
+table.listado.vertical th, td{
+	padding: 5px 5px;
+}

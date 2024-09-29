@@ -1,0 +1,61 @@
+<?php
+
+	class ExpedientesController extends Controller{
+
+		public function indexAction(){
+            $db = DB::getInstance();
+			$identity = Zend_Auth::getInstance()->getIdentity();
+			$admpos=$db->fetchRow("SELECT idAdministrador, posgradoAdm FROM `tbladministrador` WHERE `idAdministrador` = " . $identity['idAdministrador']);
+            $pos=strtolower(str_replace(' ','_',$admpos['posgradoAdm']));
+            $sql ="SELECT `v`.*, (CASE `v`.`status` WHEN 'REV' THEN 1 WHEN 'RECHAZADO' THEN 2 WHEN 'OK' THEN 3 WHEN 'POR_CONCLUIR' THEN 4  END)"
+. " AS `ordenStatus` FROM `viewexpedientes` AS `v`";
+	
+			if(( isset($this->_req['clave']) && $this->_req['clave'] != "" ) || ( isset($this->_req['nombre']) && $this->_req['nombre'] != "" ) ){
+				$sql .= " WHERE ";
+				
+				if( isset($this->_req['clave']) && $this->_req['clave'] != "" ){
+					
+					if($identity['idAdministrador']==12){
+							$sql .= "(`v`.`posgrado`='doctorado_en_ciencias_de_los_alimentos' OR `v`.`posgrado`='maestría_en_ciencias_y_tecnología_de_los_alimentos' OR `v`.`posgrado`='especialidad_en_inocuidad_de_alimentos') AND (`v`.`clave` LIKE '%". $this->_req['clave'] ."%')";
+						}elseif($identity['idAdministrador']==11)
+							{
+							$sql .= "`v`.`posgrado`='doctorado_en_ciencias_químico_biológicas' OR `v`.`posgrado`='maestría_en_química_clínica_diagnóstica' OR `v`.`posgrado`='maestría_en_ciencias_químico_biológicas' OR `v`.`posgrado`='especialidad_en_bioquímica_clínica' AND `v`.`clave` LIKE '%". $this->_req['clave'] ."%'";
+						}elseif($identity['idAdministrador']==13){
+							$sql .= "`v`.`posgrado`='maestría_en_ciencias_de_la_energía' OR `v`.`posgrado`='maestría_en_ciencia_y_tecnología_ambiental' OR `v`.`posgrado`='doctorado_en_ciencia_de_la_energía'  AND `clave` LIKE '%". $this->_req['clave'] ."%'";
+						}else{
+					$sql .= "`v`.`posgrado`='$pos' AND`v`.`clave` LIKE '%". $this->_req['clave'] ."%'";
+						}
+				}
+				
+				
+				if( isset($this->_req['nombre']) && $this->_req['nombre'] != "" ){
+					if(isset($this->_req['clave']) && $this->_req['clave'] != "" ){
+						$sql .= " AND ";
+					}
+					$sql .= "`v`.`posgrado`='$pos' AND `v`.`nombre` LIKE '%". $this->_req['nombre'] ."%'";
+				}
+                        }else{if($identity['idAdministrador']==1){
+                          $sql.="";
+                        }
+                        
+                        else{
+							IF($identity['idAdministrador']==12){
+							$sql.="WHERE `v`.`posgrado`='doctorado_en_ciencias_de_los_alimentos' OR `v`.`posgrado`='maestría_en_ciencias_y_tecnología_de_los_alimentos' OR `v`.`posgrado`='especialidad_en_inocuidad_de_alimentos' ";
+							}elseif($identity['idAdministrador']==11){
+							$sql.="WHERE `v`.`posgrado`='doctorado_en_ciencias_químico_biológicas' OR `v`.`posgrado`='maestría_en_química_clínica_diagnóstica' OR `v`.`posgrado`='maestría_en_ciencias_químico_biológicas' OR `v`.`posgrado`='especialidad_en_bioquímica_clínica' ";	
+							}elseif($identity['idAdministrador']==13){
+							$sql.="WHERE `v`.`posgrado`='maestría_en_ciencias_de_la_energía' OR `v`.`posgrado`='maestría_en_ciencia_y_tecnología_ambiental' OR `v`.`posgrado`='doctorado_en_ciencia_de_la_energía' ";	
+							}
+							else{
+                            $sql.="WHERE `v`.`posgrado`='$pos'";
+                        }}
+                        
+                        }
+			$sql .= " ORDER BY `ordenStatus` ASC, `v`.`nombre` ASC";
+
+			$paginaActual = (isset($this->_req['page']) && $this->_req['page'] > 1) ? $this->_req['page'] : 1;
+			$paginator = new Pagination($sql, 50, $paginaActual);
+			$this->view->expedientes = $paginator->getResults();
+			$this->view->paginator = $paginator;
+		}
+	}

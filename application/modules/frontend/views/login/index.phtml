@@ -1,0 +1,36 @@
+	
+	<div id="login">
+	<div id="content" class="span6">
+		<h2>No estoy registrado aún:</h2>
+		<br />
+		<br />
+		<a href="<?php echo __BASEURL__ ?>/frontend/registro/" class="boton">Registrarme en línea</a>
+		
+		
+		<br /><br /><br /><br />
+			
+		<?php echo DB::getInstance()->fetchOne('SELECT `infoPrincipal` FROM `tblconvocatoria` WHERE `status` = 1'); ?>
+
+
+
+	</div>
+	
+	<div class="span3">
+		<h2>Ya estoy registrado:</h2>
+		<form id="formLogin" method="post" action="<?php echo __BASEURL__ ?>/frontend/login/login/">
+		<?php if($this->exists('incorrect')){ ?>
+			<h2><label class="error">Correo electrónico o contraseña incorrectos.</label></h2>
+		<?php }?>
+		
+		<table>
+			<tr><td>Correo electrónico: </td><td><input type="text" name="email"/></td></tr>
+			<tr><td>Contraseña (PIN): </td><td><input type="password" name="password"/></td></tr>
+			<tr><td></td><td><input type="submit" value="Ingresar"/></td></tr>
+
+		</table>
+		</form>
+		<br />
+		<a href="<?php echo __BASEURL__ ?>/frontend/recuperar/">Olvidé mi contraseña, recuperar</a>
+	</div>
+	<div class="clear"></div>
+</div>

@@ -1,0 +1,32 @@
+<html>
+<head>
+	<style type="text/css">
+		body{
+			font-family: Tahoma, sans-serif;
+			font-size: 12px;
+		}
+	</style>
+</head>
+	<body>
+		<!--<p><img src="<?php echo __BASEURL__ ?>/images/logo.jpg"></p>-->
+		<h1 style="text-align: center;">REGISTRO CONVOCATORIA</h1>
+		<h2 style="text-align: center;"></h2>
+		
+<p>Bienvenido(a) <strong><?php echo $data['nombre']; ?></strong>,</p>
+<p>Estimado candidato:</p>
+<p>Gracias por tu interés en formar parte del Posgrado <strong><?php echo '<strong>'.strtoupper(str_replace('_',' ',$data['pos'])).'</strong>'; /*DB::getInstance()->fetchOne('SELECT `nombre` FROM `tblconvocatoria` WHERE `status` = 1');*/ ?></strong>. Para continuar con tu proceso de admisión al programa, es necesario subir tu documentación. A continuación ingresa al sitio con tu cuenta:</p>
+		
+		
+		<br /><br />
+		<p>Clave registro de aspirante: <?php echo $data['clave']; ?></p>
+		<br />
+		<p>Usuario: <strong><?php echo $data['email']; ?></strong><br />
+		PIN de acceso: <strong><?php echo $data['password']; ?></strong></p>
+		<p><strong>URL de acceso:<a href="<?php echo __BASEURL__ ?>/"><?php echo __BASEURL__ ?>/</a> </strong></p>
+		<br /><br />
+		
+		<p>Cualquier duda o comentario favor de escribir o comunicarse con nosotros.</p>
+		<p>Saludos.</p>
+
+	</body>
+</html>

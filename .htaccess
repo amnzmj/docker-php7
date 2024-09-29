@@ -1,0 +1,13 @@
+Options +FollowSymLinks
+
+SetEnv APPLICATION_ENV production
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} -s [OR]
+RewriteCond %{REQUEST_FILENAME} -l [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^.*$ - [NC,L]
+RewriteRule ^([_a-z0-9-]+)?/?([_a-z0-9-]+)?/?([_a-z0-9-]+)?/?$ index.php?_module=$1&_controller=$2&_action=$3&%{QUERY_STRING} [NC,L]
+
+# Deny Access to Source Dirs
+RewriteRule images/|css/|js/ index.php [F]

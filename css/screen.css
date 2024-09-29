@@ -1,0 +1,191 @@
+#container{
+	width: 1000px;
+	margin: 0 auto;
+	background: #fff;
+	padding: 50px;
+	padding-top: 20px;
+	border: 1px dotted #c6c7c8;
+	border-radius: 5px;
+}
+#header{
+	margin-bottom: 50px;
+}
+#header a.logo{
+	display: block;
+	float: left;
+}
+
+#header div.nombre{
+	display: block;
+	float: left;
+	margin-left: 15px;
+	margin-top: 15px;
+}
+#header img.logouaq{
+	display: block;
+	float: left;
+	margin-left: 15px;
+	margin-top: 15px;
+}
+
+body{
+	background-color: #ececec;
+}
+
+
+#formRegistro input[type=text], #formRegistro  input[type=password], #formRegistro  textarea, #formRegistro  select{
+#	width: 350px;
+}
+
+
+#login .left{
+	width: 35%;
+	padding-right: 5%;
+	float: left;
+	border-right: 1px dotted #666;
+
+}
+#login .right{
+	width: 49%;
+	padding-left: 10%;
+	float: left;
+}
+
+
+#navigation{
+	width: 98%;
+	background: #555b62;
+	border-radius: 5px;
+	height: 30px;
+	margin-bottom: 30px;
+}
+#navigation ul{
+	position: relative;
+}
+#navigation ul li{
+	float: left;
+	margin-left: 25px;
+}
+#navigation ul li.logout{
+	position: absolute;
+	right: 0;
+}
+#navigation ul li a{
+	color: #fff;
+	display: block;
+	height: 30px;
+	padding: 0 10px;
+	line-height: 30px;
+}
+#navigation ul li a:hover{
+	text-decoration: none;
+	background-color: #848d98;
+	border-radius: 5px;
+}
+
+
+
+
+#bgOverlay{
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	background-position: fixed;
+	left: 0;
+	top: 0;
+	background: url(../images/bgOverlay.png) repeat;
+	z-index: 100;
+	display: none;
+	
+}
+#messageWindow{
+	width: 50%;
+	height: 50%;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-left: -25%;
+	margin-top: -20%;
+	background: #fff;
+	display: none;
+}
+#closebtn{
+	position: absolute;
+	top: 5%;
+	right: 3%;
+	width: 100px;
+	text-align: right;
+}
+#closebtn a{
+	font-weight: bold;
+}
+#message{
+	margin-top: 5%;
+	padding: 5%;
+	height: 60%;
+	overflow: auto;
+	position: relative;
+
+}
+
+
+
+
+
+table.listado{
+	width: 98%;
+	margin-bottom: 50px;
+}
+table.listado th, td{
+	padding: 3px 5px;
+}
+table.listado.vertical th, td{
+	padding: 5px 5px;
+}
+
+table.listado th{
+	background: #005a8f;
+	color: #fff;
+}
+
+table.listado.vertical th{
+	background: none;
+	border-bottom: 1px dotted #999;
+	color: #000;
+}
+table .listado th a{
+	color: #fff;
+}
+
+table.listado td{
+	border-bottom: 1px dotted #999;
+}
+table.listado tr:hover{
+	background: #f7f7f7;
+}
+
+table.listado a.boton{
+	font-size:13px;
+	font-weight:normal;
+	padding:3px 15px;
+}
+
+table.listado tr.ok td{
+	background: #ccffaa;
+}
+table.listado tr.rechazado td{
+	background: #ffaaaa;
+}
+table.listado tr.rev td{
+	background: #dbdbdb;
+}
+
+
+
+input.datepicker{
+	background: url(../images/calendar-day.png) no-repeat center right;
+	cursor: pointer;
+	text-align: center;
+	border: 1px solid #999;
+	
+}

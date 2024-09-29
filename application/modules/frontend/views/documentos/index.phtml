@@ -1,0 +1,60 @@
+<?php $db = DB::getInstance(); ?>
+<?php $identity = Zend_Auth::getInstance()->getIdentity(); ?>
+<h2>Bienvenido, <?php echo strtoupper($identity['nombre']); ?></h2>
+<?php if($this->checarCompletado): ?>
+<div class="alert alert-success">Expediente concluido y enviado para su revisión.</div> <br /><br />
+<?php endif; ?>
+
+<table class="listado">
+	<tr><th style="width: 290px">Documento</th><th>Status</th><th>Última modificación</th><th style="">Opciones</th></tr>
+	
+	<?php foreach($this->documentos as $documento):	?>
+	<tr class="<?php echo strtolower($documento['status']); ?>">
+		<td><strong><?php echo $documento['documento']; ?></strong></td>
+		<td><?php echo $documento['textoStatus']; ?></td>
+		<td><?php echo ($documento['status'] == "SIN_DATOS") ? "Nunca" : $documento['ultimaActualizacion']; ?></td>
+		<td>
+		
+			<?php if($documento['status'] == "RECHAZADO"): ?>
+				<a href="#" onclick="return mostrarComentario(<?php echo $documento['idDocumento']; ?>);" class="boton">Ver comentario</a>
+			<?php endif; ?>
+
+			
+			<?php if($documento['status'] == "SIN_DATOS"): ?> <a href="<?php echo __BASEURL__ ?>/frontend/documentos/subir/?idDocumento=<?php echo $documento['idDocumento']; ?>" class="boton">Subir</a>
+			<?php elseif($documento['status'] != "OK"):  ?><a href="<?php echo __BASEURL__ ?>/frontend/documentos/subir/?idDocumento=<?php echo $documento['idDocumento']; ?>" class="boton">Cambiar archivo</a>
+			<?php endif; ?>
+		
+			<?php if($documento['status'] != "SIN_DATOS"): ?>
+				<a href="<?php echo __BASEURL__ ?>/frontend/documentos/descargar/?idDocumento=<?php echo $documento['idDocumento']; ?>" class="boton">Descargar</a>
+			<?php endif; ?>
+
+			<?php if($db->fetchOne("SELECT 1 FROM `tbltipodocumento` WHERE `idTipoDocumento` = '{$documento['idTipoDocumento']}' AND `info` IS NOT NULL")): ?>
+				<a href="#" onclick="return mostrarRequisitos(<?php echo $documento['idTipoDocumento']; ?>);" class="boton">Ver requisitos</a>
+			<?php endif; ?>
+			
+			
+		
+		</td>
+	</tr>
+	
+	
+	
+	<?php endforeach; ?>
+
+</table>
+<?php echo $this->paginator->getPagination(); ?>
+
+<br /><br />
+<?php echo $db->fetchOne('SELECT `infoExpediente` FROM `tblconvocatoria` WHERE `status` = 1'); ?>
+<br /><br />
+
+<script type="text/javascript">
+	function mostrarComentario(id){
+		showMessage("<?php echo __BASEURL__ ?>/frontend/documentos/comentario/", {idDocumento: id});
+		return false;
+	}
+	function mostrarRequisitos(id){
+		showMessage("<?php echo __BASEURL__ ?>/frontend/documentos/requisitos/", {idTipoDocumento: id});
+		return false;
+	}
+</script>

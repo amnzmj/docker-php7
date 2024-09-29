@@ -1,0 +1,56 @@
+<html>
+<head>
+	<style type="text/css">
+		body{
+			font-family: Tahoma, sans-serif;
+			font-size: 12px;
+		}
+	</style>
+</head>
+<body>
+	<!--<p><img src="<?php echo __BASEURL__ ?>/images/logo.jpg"></p>-->
+	<h1>Documento de su expediente rechazado</h1>
+	<p><strong><?php echo $data['nombre']; ?></strong>: </p>
+	<p>Le informamos que el documento: <strong><?php echo $data['documento']; ?></strong> ha sido rechazado en la  fecha: <strong><?php echo $data['fecha']; ?></strong>.</p>
+	<p>Comentario: </p>
+	<p><strong><?php echo nl2br($data['comentario']); ?></strong></p>
+	<p>Favor de revisar su documento y enviarlo correctamente.</p>
+	<br />
+	
+	<a href="<?php echo __BASEURL__ ?>/"><?php echo __BASEURL__ ?>/</a>
+	
+	<p>Sistema de Expedientes en línea<br />
+	Facultad de Química</p>
+	<p style="font-size: 11px">
+	Cualquier duda o comentario favor de escribir o comunicarse con nosotros a los siguientes contactos:
+	<br/><br/>
+	María del Carmen Campos Pérez<br/>
+	Tel: 1921200 Ext 5568, Email: pcampos@uaq.mx<br/>
+	Especialidad en Inocuidad de Alimentos<br/>
+	Maestría en Ciencia y Tecnología de Alimentos<br/>
+	Doctorado en Ciencias de los Alimentos<br/>
+	<br/><br/>
+	Nathaly González Miranda<br/>
+	Tel: 1921200 Ext 5555, Email: nathaly.gonzalez@uaq.mx<br/>
+	Maestría en Ciencias de la Energía<br/>
+	Maestría en Ciencia y Tecnología Ambiental<br/>
+	Doctorado en Ciencias de la Energía<br/>
+	<br/><br/>
+	Miryam Izébel Moreno Pacheco<br/>
+	Tel: 1921200 Ext 5529, Email: miryam.moreno@uaq.mx<br/>
+	Especialidad en Bioquímica Clínica<br/>
+	Maestría en Ciencias Químico Biológicas<br/>
+	Maestría en Química Clínica Diagnóstica<br/>
+	Doctorado en Ciencias Químico Biológicas<br/>
+	<br/><br/>
+	Arlette Torres López<br/>
+	Tel: 1921200 Ext 5560, Email: atl_arlette@hotmail.com<br/>
+	Oficina de Jefatura de Investigación y Posgrado<br/>
+	<br/><br/>
+	UNIVERSIDAD AUTÓNOMA DE QUERÉTARO<br/>
+	Santiago de Querétaro, Querétaro<br/>
+	Centro Universitario. Facultad de Química.<br/>
+	Cerro de las Campanas. C.P. 76010<br/>
+	</p>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<div class="pagination">
+	<div style="float: left; width: 30%;">
+		<?php if( $this->hasPrevPage() ): ?>
+			<a href="?page=<?php echo $this->getPrevPage() ?>">&lt; Anterior</a>
+		<?php endif; ?>
+		&nbsp;
+	</div>
+	<div style="width: 30%; float: left; text-align: center;"> <form action="" method="get" id="pagesForm" style="padding: 0; margin: 0;">
+		Página <select name="page" onchange="document.getElementById('pagesForm').submit()" style="width: auto;">
+				<?php foreach($this->getPages() as $p): ?>
+					<option value="<?php echo $p; ?>" <?php if($p == $this->getCurrentPage()): ?> selected="selected" <?php endif; ?>><?php echo $p; ?></option>
+				<?php endforeach; ?>
+			</select>
+		
+		de <?php echo $this->getTotalPages(); ?></form>
+	</div>
+
+	<div style="width: 30%; float: left;  text-align: right;">
+		<?php if( $this->hasNextPage() ): ?>
+			<a href="?page=<?php echo $this->getNextPage() ?>">Siguiente &gt;</a>
+		<?php endif; ?>
+		&nbsp;
+	</div>
+	<div style="clear: both;"></div>
+</div>

@@ -1,0 +1,163 @@
+<?php
+
+
+class DB {
+
+	protected $connection;
+	protected static $instance;
+
+	public function __construct( $host = null, $user = null, $password = null, $db = null ){
+		
+		if( $host == null && $user == null && $password == null && $db == null ){
+			if(Zend_Registry::isRegistered('config')){
+				$ini = Zend_Registry::get('config');
+			}
+			else{
+				require_once("Zend/Config/Ini.php");
+				$ini = new Zend_Config_Ini(APPLICATION_PATH . "/application.ini", APPLICATION_ENV);
+			}
+			
+			$host = $ini->database->params->host;
+			$user = $ini->database->params->username;
+			$password = $ini->database->params->password;
+			$db = $ini->database->params->dbname;
+		}
+		
+		$this->connection = mysqli_connect($host, $user, $password, $db);
+		if(! $this->connection) throw new Exception("IMPOSIBLE CONECTAR A DB");
+		//if( ! mysql_selectdb($db, $this->connection) ) throw new Exception("IMPOSIBLE SELECCIONAR DB");
+		
+		$this->query("SET NAMES 'utf8'");
+		$this->query("SET lc_time_names = 'es_MX'");
+		
+		$UTC = (date("I")) ?  "-5:00" : "-6:00";
+		$this->query("SET time_zone = '$UTC'");
+		
+		self::$instance = $this;
+	}
+	
+	public function query($sql){
+		$query = mysqli_query($this->connection, $sql);
+		if( ! $query ){
+			throw new Exception("Error MYSQL: ".mysqli_error($this->connection)."\n\n Query: \n\n" . $sql);
+		}
+		return $query;
+	}
+	
+	public function fetchOne($query){
+		$q = mysqli_fetch_row( ( is_string( $query ) ) ? $this->query( $query ) : $query );
+		return (is_array($q)) ? $q[0] : false;
+	}
+
+	public function fetchRow($query){
+		if(is_string( $query ) ){
+			return  mysqli_fetch_assoc( $this->query( $query ) );
+		}
+		else{
+			return mysqli_fetch_assoc($query);
+		}
+	}
+	
+	public function fetchArray($query){
+		$array = array();
+		if(is_string( $query ) ){
+			$query = $this->query ( $query );
+		}
+		
+		while( $row = mysqli_fetch_assoc($query) ){
+			$array[] = $row;
+		}
+		mysqli_free_result($query);
+		return $array;
+	}
+	
+	public function insert($data = array(), $table = ""){
+		$sql = "INSERT INTO `". $table ."` (`" . implode("`,`", array_keys($data) ) . "`) VALUES (";
+		
+		foreach($data as $key=>$datum){
+			if(is_array($datum)){
+				$sql .= $datum[0].","; //is SQL Expr
+			}
+			elseif($datum === null){
+				$sql .= "NULL,"; //NULL
+			}
+			else{
+				$datum = addslashes($datum);
+				$sql .= "'$datum',";
+			}
+		}
+		$sql = substr($sql, 0, strlen($sql) - 1); //remove last comma
+		
+		$sql .= ")";
+		
+		$query = $this->query($sql);
+		
+		if($query){
+			return mysqli_insert_id($this->connection);
+		}
+		else{
+			return false;
+		}
+	}
+	
+	
+	
+	public function update($data = array(), $table = "", $where){
+		$sql = "UPDATE `". $table ."` SET ";
+				
+		foreach($data as $key=>$datum){
+			$sql .= "`$key` = ";
+			if(is_array($datum)){
+				$sql .=$datum[0]; //is SQL Expr
+			}
+			elseif($datum === null){
+				$sql .= "NULL"; //NULL
+			}
+			else{
+				$datum = addslashes($datum);
+				$sql .= "'$datum'";
+			}
+			$sql .= ",";
+		}
+		$sql = substr($sql, 0, strlen($sql) - 1); //remove last comma
+		
+		$sql .= " WHERE ".$where;
+		
+		
+		if($this->query($sql)){
+			return  ( mysqli_affected_rows() > 0) ? mysql_affected_rows() : true;
+		}
+		else{
+			return false; 
+		}
+		
+	}
+	
+	
+	public function delete($table = "", $where = ""){
+		$sql = "DELETE FROM `$table` WHERE $where";
+		return $this->query($sql);
+	}
+
+	
+	
+	
+	public function closeConnection(){
+		//mysql_free_result();
+		mysqli_close($this->connection);
+	}
+	
+	public function __destruct(){
+		$this->closeConnection();
+	}
+	
+	
+	public static function getInstance(){
+		if(self::$instance instanceof DB) return self::$instance;
+		return new DB();
+	}
+	
+	
+	
+}
+?>

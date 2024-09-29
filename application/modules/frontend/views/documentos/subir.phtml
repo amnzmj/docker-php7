@@ -1,0 +1,46 @@
+<h1>Subir documento</h1>
+<br /><br />
+
+<form action="<?php echo __BASEURL__ ?>/frontend/documentos/subirsubmit/" method="post" enctype="multipart/form-data" id="subirform">
+<h2>Documento: <?php echo $this->documento['documento']; ?></h2>
+<p>Seleccionar archivo: <input type="file" name="archivo" class="required"></p>
+
+<?php if(isset($this->_req['ext'])): ?>
+<div class="alert alert-danger">Error: el formato de archivo que subio no es permitido.</div>
+<?php endif; ?>
+<?php if(isset($this->_req['peso'])): ?>
+<div class="alert alert-danger">Error: El peso máximo para este documento fue exedido el archivo que subio.</div>
+<?php endif; ?>
+
+
+<br />
+Formatos permitidos: <strong><?php $formatos = array(); foreach($this->formatos as $f): $formatos[] = $f['formato']; endforeach; 
+echo implode(", ", $formatos); ?></strong>
+<br />
+Peso de archivo máximo: <strong><?php echo number_format($this->documento['pesoMax']); ?> KB</strong><br /><br />
+
+<input type="submit" value="Subir archivo" />
+<input type="hidden" name="idDocumento" value="<?php echo $this->documento['idDocumento']; ?>" />
+</form>
+<br /><br />
+
+
+<?php if($this->documento['info'] !== null ): ?>
+	<h2>Otra Información: </h2>
+	<div style="padding: 15px;">
+		<?php echo $this->documento['info']; ?>
+	</div>
+<?php endif; ?>
+
+
+<script type="text/javascript">
+	$(function(){
+		$("#subirform").validate();
+		
+		$("#subirform").submit(function(){
+			if( $(this).valid() ){
+				$(this).find("input[type=submit]").attr('disabled', 'disabled');
+			}
+		});
+	});
+</script>

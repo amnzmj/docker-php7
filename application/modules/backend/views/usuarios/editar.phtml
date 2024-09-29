@@ -1,0 +1,17 @@
+<?php
+	$a = $this->administrador;	
+?>
+	<h1>Editar usuario</h1>
+	<form id="editarUsuario" action="<?php echo __BASEURL__ ?>/backend/usuarios/editar/?idAdministrador=<?php echo $this->idAdministrador; ?>" method="post">
+	<table>
+		<tr><td>Nombre: </td><td><input type="text" name="nombre" value="<?php echo $a['nombre']; ?>" class="required"/></td></tr>
+		<tr><td>E-mail: </td><td><input type="text" name="email" value="<?php echo $a['email']; ?>" class="required email" /></td></tr>
+		<tr><td>Password: <br />(dejar en blanco para no modificar) </td><td><input type="password" name="password" /></td></tr>
+		<tr><td colspan="2"><br /><br /><input type="submit" value="Guardar" /></td></tr>
+	</table>
+	</form>
+	<script type="text/javascript">
+		$(function(){
+			$("#editarUsuario").validate();
+		});
+	</script>

@@ -1,0 +1,26 @@
+<html>
+<head>
+	<style type="text/css">
+		body{
+			font-family: Tahoma, sans-serif;
+			font-size: 12px;
+		}
+	</style>
+</head>
+<body>
+	<p><img src="<?php echo __BASEURL__ ?>/images/logo.jpg"></p>
+	<h1>Expediente rechazado</h1>
+	<p><strong><?php echo $data['nombre']; ?></strong>: </p>
+	<p>Le informamos que el documento: <strong><?php echo $data['documento']; ?></strong> ha sido rechazado en la  fecha: <strong><?php echo $data['fecha']; ?></strong>.</p>
+	<p>Comentario: </p>
+	<p><?php echo nl2br($data['comentario']); ?></p>
+	
+	<p>Favor de revisar su documento y enviarlo correctamente.</p>
+	<br /><br />
+	
+	<a href="<?php echo __BASEURL__ ?>/"><?php echo __BASEURL__ ?>/</a>
+	
+	<p>Sistema de Expedientes en línea<br />
+	Facultad de Ciencias Políticas y Sociales</p>
+</body>
+</html>

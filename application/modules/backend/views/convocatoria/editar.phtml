@@ -1,0 +1,37 @@
+<h1>Editar información de la convocatoria</h1>
+
+<form action="<?php echo __BASEURL__;?>/backend/convocatoria/submiteditar/" id="editarform" method="post">
+	<table>
+		<tr><td>Nombre de la convocatoria:</td><td><textarea name="nombre" class="required"><?php echo $this->convocatoria['nombre']; ?></textarea></td></tr>
+		<tr><td>Prefijo para clave de registro:</td><td><input type="text" class="required digits" name="clavePrefijo" value="<?php echo $this->convocatoria['clavePrefijo']; ?>"/></td></tr>
+	</table>
+	
+<h2>Información para página principal:</h2>
+<textarea name="infoPrincipal"  class="tinymce"><?php echo htmlentities($this->convocatoria['infoPrincipal']); ?></textarea>
+
+<br /><br />
+<h2>Información para página de visualización de expediente para aspirante:</h2>
+<textarea name="infoExpediente"  class="tinymce"><?php echo htmlentities($this->convocatoria['infoExpediente']); ?></textarea>
+
+<br /><br />
+<h2>Información que se envía en el correo de aprobación finalizada al aspirante:</h2>
+<textarea name="infoFinalizado" class="tinymce"><?php echo htmlentities($this->convocatoria['infoFinalizado']); ?></textarea>
+
+<br /><br />
+<input type="submit" value="Guardar información" />
+
+<br /><br />
+<a href="<?php echo __BASEURL__; ?>/backend/convocatoria/" class="boton">&lt; Regresar</a>
+</form>
+
+<script type="text/javascript">
+	$(function(){
+		$("#editarform").validate();
+		
+		tinymce.init({
+			selector: "textarea.tinymce",
+			plugins: ["table"]
+		});
+
+	});
+</script>

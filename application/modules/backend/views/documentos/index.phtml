@@ -1,0 +1,55 @@
+<h1>Expediente para: <?php echo $this->nombre; ?></h1>
+<table class="listado">
+	<tr><th style="width: 290px">Documento</th><th style="width: 80px;">Status</th><th style="width: 170px;">Última modificación</th><th>Opciones</th></tr>
+	
+	<?php foreach($this->documentos as $documento):	?>
+	<tr class="<?php echo strtolower($documento['status']); ?>">
+		<td><strong><?php echo $documento['documento']; ?></strong></td>
+		<td><?php echo $documento['textoStatus']; ?></td>
+		<td><?php echo ($documento['status'] == "SIN_DATOS") ? "Nunca" : $documento['ultimaActualizacion']; ?></td>
+		<td>
+		<?php if($documento['status'] != "SIN_DATOS"): ?>
+		
+			<?php if($documento['status'] == "RECHAZADO" || $documento['status'] == "REV"): ?>
+			<a href="<?php echo __BASEURL__ ?>/backend/documentos/aprobar/?idDocumento=<?php echo $documento['idDocumento']; ?>" class="boton verde">Aprobar</a> 
+			<?php endif; ?>
+			<?php if($documento['status'] == "OK" || $documento['status'] == "REV"): ?>
+			<a href="<?php echo __BASEURL__ ?>/backend/documentos/rechazar/?idDocumento=<?php echo $documento['idDocumento']; ?>" class="boton rojo">Rechazar</a> 
+			<?php endif; ?>
+			<a href="<?php echo __BASEURL__ ?>/backend/documentos/preview/?idDocumento=<?php echo $documento['idDocumento']; ?>" class="boton vistaprevia" >Vista previa</a> 
+			<a href="<?php echo __BASEURL__ ?>/backend/documentos/descargar/?idDocumento=<?php echo $documento['idDocumento']; ?>" class="boton ">Descargar</a> 
+		<?php endif; ?>
+		<?php if($documento['status'] == "RECHAZADO"): ?>
+			<a href="#" onclick="return mostrarComentario(<?php echo $documento['idDocumento']; ?>)" class="boton">Ver comentario</a> 
+		<?php endif; ?>
+		
+		</td>
+	</tr>
+	<?php endforeach; ?>
+</table>
+<br /><br />
+<?php echo $this->paginator->getPagination(); ?>
+<br /><br />
+<br /><br />
+<h2>Vista Previa:</h2>
+<div id="vistaPrevia" style="width: 100%; height: 500px;">
+</div>
+<a href="<?php echo __BASEURL__ ?>/backend/expedientes/" class="boton">&lt; Regresar</a>
+
+
+<script type="text/javascript">
+	function mostrarComentario(id){
+		showMessage("<?php echo __BASEURL__ ?>/backend/documentos/comentario/", {idDocumento: id});
+		return false;
+	}
+	
+	$(function(){
+		$('a.vistaprevia').each(function(){
+			$(this).click(function(e){
+				$('#vistaPrevia').empty();
+				$('<iframe></iframe>').css({width: '100%', 'height': '100%'}).attr('src', $(this).attr('href')).appendTo('#vistaPrevia');
+				return false;
+			});
+		});
+	});
+</script>

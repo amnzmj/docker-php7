@@ -1,0 +1,39 @@
+<?php $a = $this->aspirante; ?>
+
+<h1>Detalle de Aspirante</h1>
+<br />
+<table class="listado vertical">
+	<tr><th style="width: 200px;">Nombre: </th><td><?php echo $a['nombre']; ?></td></tr>
+	<tr><th>Clave: </th><td><?php echo $a['clave']; ?></td></tr>
+	<tr><th>Posgrado: </th><td><?php echo strtoupper(str_replace('_',' ',$a['posgrado'])); ?></td></tr>
+	<tr><th>LGAC: </th><td><?php echo strtoupper(str_replace('_',' ',$a['LGAC'])); ?></td></tr>
+	<tr><th>Fecha de nacimiento: </th><td><?php echo $a['fechaNacimiento']; ?></td></tr>
+	<tr><th>Nacionalidad: </th><td><?php echo $a['nacionalidad']; ?></td></tr>
+	<tr><th>Lugar de nacimiento: </th><td><?php echo $a['lugarNacimiento']; ?></td></tr>
+	<tr><th>Teléfono fijo: </th><td><?php echo $a['telefonoFijo']; ?></td></tr>
+	<tr><th>Teléfono móvil: </th><td><?php echo $a['telefonoMovil']; ?></td></tr>
+	<tr><th>Correo electrónico: </th><td><?php echo $a['email']; ?></td></tr>
+	<tr><th>Dirección: </th><td><?php echo $a['direccionCalle'] . " " . $a['direccionNumero']; ?><br />
+	<?php echo $a['direccionColonia'] ?><br />
+	<?php echo $a['direccionMunicipio'] . ", " . $a['direccionEstado'] . " " . $a['direccionCP']; ?></td></tr>
+	<tr><th>Licenciatura: </th><td><?php echo $a['licenciatura']; ?></td></tr>
+	<tr><th>Universidad: </th><td><?php echo $a['universidad']; ?></td></tr>
+	<tr><th>Dirección de universidad: </th><td><?php echo $a['universidadDireccion']; ?></td></tr>
+	<tr><th>Fecha ingreso: </th><td><?php echo $a['fechaIngreso']; ?></td></tr>
+	<tr><th>Fecha egreso: </th><td><?php echo $a['fechaEgreso']; ?></td></tr>
+	<tr><th>Promedio general: </th><td><?php echo $a['promedioGeneral']; ?></td></tr>
+	<tr><th>Cuenta con su título: </th><td><?php echo $a['tieneTitulo']; ?></td></tr>
+
+</table>
+
+<?php if(count($this->posgrados)) : ?>
+<h2>Posgrados</h2>
+<table class="listado">
+	<tr><th>Posgrado</th><th>Institución</th><th>Fecha ingreso</th><th>Fecha Egreso</th></tr>
+	<?php foreach($this->posgrados as $p): ?>
+		<tr><td><?php echo $p['posgrado']; ?></td><td><?php echo $p['institucion']; ?></td><td><?php echo $p['fechaIngreso']; ?></td><td><?php echo $p['fechaEgreso']; ?></td></tr>
+	<?php endforeach; ?>
+</table>
+
+<?php endif; ?>
+<a href="<?php echo __BASEURL__ ?>/backend/aspirantes/" class="boton">&lt; Regresar</a>

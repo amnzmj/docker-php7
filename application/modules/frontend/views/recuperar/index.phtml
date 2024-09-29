@@ -1,0 +1,20 @@
+<h1>Recuperar contraseña</h1>
+
+<?php if($this->exists('inexistent')): ?>
+<div class="alert alert-danger">El usuario con el correo electrónico proporcionado no se encuentra en el sistema</div>
+<?php endif; ?>
+<form id="recuperarPassword" action="<?php echo __BASEURL__ ?>/frontend/recuperar/submit/" method="post">
+	Correo electrónico con el que se hizo el registro: <input type="text" name="email" class="required email" />
+	<br /><br />
+	<input type="submit" value="Enviar contraseña" />
+</form>
+
+
+
+<br /><br /><br /><br />
+<a href="<?php echo __BASEURL__ ?>/frontend/index/" class="boton">&lt; Regresar</a>
+<script type="text/javascript">
+	$(function(){
+		$("#recuperarPassword").validate();
+	});
+</script>

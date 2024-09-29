@@ -1,0 +1,38 @@
+<h1>Convocatoria</h1>
+
+<?php if(isset($_GET['limpiardatos'])): ?>
+	<div class="alert alert-success">Todos los expedientes de la convocatoria fueron eliminados correctamente</div>
+<?php endif; ?>
+
+<div style="padding: 15px">
+	<a href="<?php echo __BASEURL__;?>/backend/convocatoria/editar/" class="boton">Editar información convocatoria</a>
+	<a href="<?php echo __BASEURL__;?>/backend/convocatoria/documentos/" class="boton">Documentos de la convocatoria</a>
+	<a href="<?php echo __BASEURL__;?>/backend/convocatoria/limpiardatos/" class="boton rojo eliminar">Eliminar todos los expedientes y aspirantes</a>
+	
+</div>
+<table class="listado vertical">
+	<tr><th style="width: 250px;">Nombre:</th><td><h2><?php echo $this->convocatoria['nombre']; ?></h2></td></tr>
+	<tr><th>Prefijo para clave de registro:</th><td><h2><?php echo $this->convocatoria['clavePrefijo']; ?></h2></td></tr>
+</table>
+
+
+<h2>Información para página principal:</h2>
+<div style="padding: 20px; border: 1px solid #666;"><?php echo $this->convocatoria['infoPrincipal']; ?></div>
+
+<br /><br />
+<h2>Información para página de visualización de expediente para aspirante:</h2>
+<div style="padding: 20px; border: 1px solid #666;"><?php echo $this->convocatoria['infoExpediente']; ?></div>
+
+<br /><br />
+<h2>Información que se envía en el correo de aprobación finalizada al aspirante:</h2>
+<div style="padding: 20px; border: 1px solid #666;"><?php echo $this->convocatoria['infoFinalizado']; ?></div>
+
+
+<script type="text/javascript">
+	$(function(){
+		$('a.eliminar').click(function(){
+			return confirm('¡ADVERTENCIA! Se eliminarán TODOS los aspirantes, sus expedientes y su información, reseteando la convocatoria sin posibilidad de recuperar ninguna información. ¿Desea continuar y eliminar todo?');
+		});
+	});
+
+</script>

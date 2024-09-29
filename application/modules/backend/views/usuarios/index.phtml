@@ -1,0 +1,40 @@
+<?php
+	$identity = Zend_Auth::getInstance()->getIdentity();
+?>
+
+<a href="<?php echo __BASEURL__ ?>/backend/usuarios/nuevo/" class="boton">Crear nuevo</a><br /><br />
+<table class="listado">
+
+	<tr><th style="width: 200px">Nombre</th><th>E-mail</th><th>Notificar</th><th>Activo</th><th>Opciones</th></tr>
+	
+	<?php foreach($this->administradores as $a): ?>
+	<tr class="<?php echo ($a['activo']) ? "" : "rechazado" ?>">
+		<td><strong><?php echo $a['nombre']; ?></strong></td>
+		<td><?php echo $a['email']; ?></td>
+		<td><?php echo ($a['notificar']) ? "SI" : "NO" ?></td>
+		<td><?php echo ($a['activo']) ? "SI" : "NO" ?></td>		
+		<td>
+			<?php if($identity['idAdministrador'] != $a['idAdministrador']): ?>
+			<a href="<?php echo __BASEURL__ ?>/backend/usuarios/desactivar/?idAdministrador=<?php echo $a['idAdministrador']; ?>" class="boton"><?php echo ($a['activo']) ? "Desactivar" : "Activar" ?></a>
+			<?php endif; ?>
+			
+			<a href="<?php echo __BASEURL__ ?>/backend/usuarios/notificar/?idAdministrador=<?php echo $a['idAdministrador']; ?>" class="boton"><?php echo ($a['notificar']) ? "No notificar" : "Notificar" ?></a>
+			<a href="<?php echo __BASEURL__ ?>/backend/usuarios/editar/?idAdministrador=<?php echo $a['idAdministrador']; ?>" class="boton">Editar</a>
+			<?php if($identity['idAdministrador'] != $a['idAdministrador']): ?>
+			<a href="<?php echo __BASEURL__ ?>/backend/usuarios/eliminar/?idAdministrador=<?php echo $a['idAdministrador']; ?>" class="boton" onclick="return eliminar();">Eliminar</a>
+			<?php endif; ?>
+		</td>
+	</tr>
+	<?php endforeach; ?>
+</table>
+<br /><br />
+<?php echo $this->paginator->getPagination(); ?>
+<br /><br />
+
+
+<script type="text/javascript">
+	function eliminar(){
+		return confirm("¿Está seguro de querer eliminar este usuario?");
+	}
+	
+	</script>
